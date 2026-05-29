@@ -102,10 +102,9 @@ This project is deployed on Vercel. To deploy your own instance:
 
 ## Hackathon
 
-Built for the [H0: Hack the Zero Stack Hackathon]([https://hackathon.devpost.com](https://h01.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio&_gl=1*141ny3p*_gcl_au*MjAwMzIyMTY2NC4xNzc4MTEzMDgw*_ga*MTE0NzQ2NjY2MC4xNzY5OTYzMjc3*_ga_0YHJK3Y10M*czE3ODAwOTc4MTYkbzQ0JGcxJHQxNzgwMDk3ODM4JGozOCRsMCRoMA..)) for Track 3: Million-scale Global App.
-
+Built for the [H0: Hack the Zero Stack Hackathon](https://h01.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio&_gl=1*141ny3p*_gcl_au*MjAwMzIyMTY2NC4xNzc4MTEzMDgw*_ga*MTE0NzQ2NjY2MC4xNzY5OTYzMjc3*_ga_0YHJK3Y10M*czE3ODAwOTc4MTYkbzQ0JGcxJHQxNzgwMDk3ODM4JGozOCRsMCRoMA..) for Track 3: Million-scale Global App.
+ 
 AWS Database used: **Amazon DynamoDB**
-
 ---
 
 ## License
