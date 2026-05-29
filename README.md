@@ -38,13 +38,13 @@ LegendVault lets anyone drop a pin on the map and attach an urban legend to it. 
 
 ## Data Model (DynamoDB)
 
-**Legends Table** — legendId (PK), createdAt (SK), title, story, authorId, location, category, upvotes, commentCount
+**Legends Table** --> legendId (PK), createdAt (SK), title, story, authorId, location, category, upvotes, commentCount
 
-**Users Table** — userId (PK), username, email, bio, avatarUrl, legendsSubmitted, joinedAt
+**Users Table** --> userId (PK), username, email, bio, avatarUrl, legendsSubmitted, joinedAt
 
-**Votes Table** — userId (PK), legendId (SK), createdAt
+**Votes Table** --> userId (PK), legendId (SK), createdAt
 
-**Comments Table** — legendId (PK), commentId (SK), authorId, authorName, content, createdAt
+**Comments Table** --> legendId (PK), commentId (SK), authorId, authorName, content, createdAt
 
 ---
 
