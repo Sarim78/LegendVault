@@ -21,7 +21,6 @@ LegendVault lets anyone drop a pin on the map and attach an urban legend to it. 
 | Auth | Clerk |
 | Map | Mapbox GL JS |
 | Deployment | Vercel |
-| UI Scaffold | Vercel v0 |
 
 ---
 
