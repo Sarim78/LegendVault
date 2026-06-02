@@ -187,7 +187,7 @@ export default function HomePage() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 md:flex-row">
           <div className="flex items-center gap-2 text-muted-foreground">
             <span className="font-serif text-lg font-bold text-foreground">LegendVault</span>
-            <span className="text-sm">© 2024</span>
+            <span className="text-sm">© 2026</span>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/feed" className="transition-smooth hover:text-foreground">
