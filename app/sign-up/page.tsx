@@ -39,7 +39,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4 py-12">
+    <div className="flex min-h-[calc(100dvh-4rem)] items-center justify-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-md">
         {/* Logo & Tagline */}
         <div className="mb-8 text-center">
@@ -55,7 +55,7 @@ export default function SignUpPage() {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-xl p-6 md:p-8">
+        <div className="glass-card w-full rounded-xl p-4 sm:p-6 md:p-8">
           {error && (
             <div className="mb-6 flex items-center gap-2 rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
               <AlertCircle className="h-4 w-4" />
@@ -80,7 +80,7 @@ export default function SignUpPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="NightWatcher"
-                  className="w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="min-h-11 w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="min-h-11 w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="min-h-11 w-full rounded-lg border border-border/60 bg-background/50 py-3 pl-11 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -135,7 +135,7 @@ export default function SignUpPage() {
               type="submit"
               size="lg"
               className={cn(
-                'glow-violet w-full bg-primary text-base font-medium transition-smooth hover:bg-primary/90',
+                'glow-violet min-h-11 w-full bg-primary text-base font-medium transition-smooth hover:bg-primary/90',
                 isLoading && 'opacity-80'
               )}
               disabled={isLoading}

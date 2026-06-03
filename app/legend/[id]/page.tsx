@@ -84,7 +84,7 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
           </span>
 
           {/* Title */}
-          <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-3xl font-serif text-2xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
             {legend.title}
           </h1>
 
@@ -124,7 +124,7 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
                 size="lg"
                 variant={upvoted ? 'default' : 'outline'}
                 className={cn(
-                  'gap-2 transition-smooth',
+                  'min-h-11 gap-2 transition-smooth',
                   upvoted
                     ? 'bg-primary hover:bg-primary/90'
                     : 'border-border/60 hover:border-primary/50 hover:bg-primary/10'
@@ -155,14 +155,13 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts or experiences..."
-                    className="w-full resize-none bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    className="min-h-11 w-full resize-none bg-transparent px-4 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
                     rows={3}
                   />
                   <div className="flex items-center justify-end border-t border-border/40 px-4 py-3">
                     <Button
                       type="submit"
-                      size="sm"
-                      className="bg-primary hover:bg-primary/90"
+                      className="min-h-11 bg-primary hover:bg-primary/90"
                       disabled={!newComment.trim()}
                     >
                       <Send className="mr-2 h-4 w-4" />

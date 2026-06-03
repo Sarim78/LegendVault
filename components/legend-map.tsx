@@ -31,13 +31,19 @@ function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function isTouchDevice() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(max-width: 1023px)').matches
+}
+
 function createGlowingIcon(color: string, selected: boolean) {
-  const size = selected ? 48 : 36
+  const touch = isTouchDevice()
+  const size = selected ? (touch ? 52 : 48) : touch ? 44 : 36
 
   return L.divIcon({
     className: 'legend-marker-icon',
     html: `
-      <div class="legend-pin ${selected ? 'legend-pin--selected' : ''}" style="--pin-color: ${color}">
+      <div class="legend-pin ${selected ? 'legend-pin--selected' : ''} ${touch ? 'legend-pin--touch' : ''}" style="--pin-color: ${color}">
         <span class="legend-pin__glow"></span>
         <span class="legend-pin__ring"></span>
         <span class="legend-pin__dot"></span>
@@ -81,8 +87,12 @@ export default function LegendMap({
     const map = L.map(containerRef.current, {
       center: [39.8, -98.5],
       zoom: 4,
-      zoomControl: true,
+      zoomControl: false,
+      tap: true,
+      tapTolerance: 20,
     })
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map)
 
     L.tileLayer(TILE_URL, {
       attribution:
@@ -107,22 +117,45 @@ export default function LegendMap({
       const color = CATEGORY_COLORS[legend.category]
       const marker = L.marker([legend.location.lat, legend.location.lng], {
         icon: createGlowingIcon(color, false),
+        keyboard: true,
+        riseOnHover: true,
       })
 
       marker.bindPopup(buildPopupHtml(legend), {
         className: 'legend-leaflet-popup',
         maxWidth: 280,
+        minWidth: 220,
+        autoPan: true,
+        autoPanPadding: [80, 80],
+        closeOnClick: false,
       })
 
-      marker.on('click', () => {
+      const selectLegend = () => {
         onSelectLegendRef.current(legend.id)
-      })
+      }
+
+      marker.on('click', selectLegend)
 
       marker.addTo(map)
       markersRef.current.set(legend.id, marker)
     })
 
+    const invalidate = () => {
+      map.invalidateSize({ animate: false })
+    }
+
+    map.whenReady(invalidate)
+    const t1 = window.setTimeout(invalidate, 100)
+    const t2 = window.setTimeout(invalidate, 500)
+
+    window.addEventListener('resize', invalidate)
+    window.addEventListener('orientationchange', invalidate)
+
     return () => {
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+      window.removeEventListener('resize', invalidate)
+      window.removeEventListener('orientationchange', invalidate)
       map.remove()
       mapRef.current = null
       markersRef.current.clear()
@@ -155,5 +188,7 @@ export default function LegendMap({
     }
   }, [selectedLegendId])
 
-  return <div ref={containerRef} className="legend-map-container h-full w-full" />
+  return (
+    <div ref={containerRef} className="legend-map-container h-full w-full min-h-0" />
+  )
 }

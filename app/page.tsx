@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="noise-overlay relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-4">
+      <section className="noise-overlay relative flex min-h-[85dvh] flex-col items-center justify-center overflow-hidden px-4 py-16 sm:min-h-[90vh]">
         {/* Background Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background/95" />
         
@@ -19,21 +19,21 @@ export default function HomePage() {
         <div className="fog-layer absolute inset-0 bg-gradient-to-t from-destructive/5 via-transparent to-transparent" style={{ animationDelay: '-10s' }} />
         
         {/* Content */}
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <h1 className="font-serif text-5xl font-bold leading-tight tracking-tight text-foreground md:text-7xl lg:text-8xl">
+        <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
+          <h1 className="font-serif text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl md:text-7xl lg:text-8xl">
             <span className="text-balance">Every Place Has a</span>{' '}
             <span className="text-primary">Secret</span>
           </h1>
           
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground md:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base text-muted-foreground sm:text-lg md:text-xl">
             Discover the legends buried in your backyard. Explore haunted locations, 
             cryptid sightings, and mysterious disappearances tied to real-world places.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mx-auto mt-10 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center sm:gap-4">
             <Button
               size="lg"
-              className="glow-violet bg-primary px-8 text-base font-medium transition-smooth hover:bg-primary/90"
+              className="glow-violet min-h-11 w-full bg-primary px-8 text-base font-medium transition-smooth hover:bg-primary/90 sm:w-auto"
               asChild
             >
               <Link href="/feed">
@@ -44,7 +44,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              className="border-border/60 px-8 text-base font-medium transition-smooth hover:border-primary/50 hover:bg-primary/10"
+              className="min-h-11 w-full border-border/60 px-8 text-base font-medium transition-smooth hover:border-primary/50 hover:bg-primary/10 sm:w-auto"
               asChild
             >
               <Link href="/submit">
@@ -67,9 +67,9 @@ export default function HomePage() {
       {/* Preview Legends Section */}
       <section className="border-t border-border/40 bg-card/30 py-20">
         <div className="container mx-auto px-4">
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+              <h2 className="font-serif text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">
                 Recent Discoveries
               </h2>
               <p className="mt-2 text-muted-foreground">
@@ -84,12 +84,9 @@ export default function HomePage() {
             </Button>
           </div>
 
-          {/* Horizontal Scroll on Mobile, Grid on Desktop */}
-          <div className="scrollbar-hide -mx-4 flex gap-6 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {previewLegends.map((legend) => (
-              <div key={legend.id} className="min-w-[300px] flex-shrink-0 md:min-w-0">
-                <LegendCard legend={legend} />
-              </div>
+              <LegendCard key={legend.id} legend={legend} />
             ))}
           </div>
 
@@ -163,7 +160,7 @@ export default function HomePage() {
       <section className="noise-overlay relative overflow-hidden border-t border-border/40 py-24">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
         <div className="container relative z-10 mx-auto px-4 text-center">
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+          <h2 className="font-serif text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">
             Have a Story to Tell?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
@@ -172,7 +169,7 @@ export default function HomePage() {
           </p>
           <Button
             size="lg"
-            className="glow-violet mt-8 bg-primary px-10 text-base font-medium transition-smooth hover:bg-primary/90"
+            className="glow-violet mt-8 min-h-11 w-full max-w-sm bg-primary px-10 text-base font-medium transition-smooth hover:bg-primary/90 sm:w-auto"
             asChild
           >
             <Link href="/submit">

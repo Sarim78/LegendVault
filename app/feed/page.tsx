@@ -39,7 +39,7 @@ export default function FeedPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="font-serif text-4xl font-bold text-foreground md:text-5xl">
+          <h1 className="font-serif text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
             Explore Legends
           </h1>
           <p className="mt-2 text-muted-foreground">
@@ -52,18 +52,18 @@ export default function FeedPage() {
           <div className="flex items-center justify-between lg:hidden">
             <Button
               variant="outline"
-              size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className="border-border/60"
+              className="min-h-11 border-border/60"
             >
               <SlidersHorizontal className="mr-2 h-4 w-4" />
               Filters
             </Button>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => setSortBy('newest')}
                 className={cn(
-                  'rounded-lg px-3 py-1.5 text-sm font-medium transition-smooth',
+                  'min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition-smooth',
                   sortBy === 'newest'
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
@@ -72,9 +72,10 @@ export default function FeedPage() {
                 Newest
               </button>
               <button
+                type="button"
                 onClick={() => setSortBy('upvoted')}
                 className={cn(
-                  'rounded-lg px-3 py-1.5 text-sm font-medium transition-smooth',
+                  'min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition-smooth',
                   sortBy === 'upvoted'
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
@@ -100,9 +101,10 @@ export default function FeedPage() {
                 </h3>
                 <div className="flex flex-col gap-2">
                   <button
+                    type="button"
                     onClick={() => setSelectedCategory('all')}
                     className={cn(
-                      'flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
+                      'flex min-h-11 items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
                       selectedCategory === 'all'
                         ? 'bg-primary/10 text-primary'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -118,9 +120,10 @@ export default function FeedPage() {
                     return (
                       <button
                         key={category.value}
+                        type="button"
                         onClick={() => setSelectedCategory(category.value)}
                         className={cn(
-                          'flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
+                          'flex min-h-11 items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
                           selectedCategory === category.value
                             ? 'bg-primary/10 text-primary'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -146,9 +149,10 @@ export default function FeedPage() {
                 </h3>
                 <div className="flex flex-col gap-2">
                   <button
+                    type="button"
                     onClick={() => setSortBy('newest')}
                     className={cn(
-                      'rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
+                      'min-h-11 rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
                       sortBy === 'newest'
                         ? 'bg-primary/10 text-primary'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -157,9 +161,10 @@ export default function FeedPage() {
                     Newest First
                   </button>
                   <button
+                    type="button"
                     onClick={() => setSortBy('upvoted')}
                     className={cn(
-                      'rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
+                      'min-h-11 rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth',
                       sortBy === 'upvoted'
                         ? 'bg-primary/10 text-primary'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -175,7 +180,7 @@ export default function FeedPage() {
           {/* Main Content */}
           <main className="flex-1">
             {filteredAndSortedLegends.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filteredAndSortedLegends.map((legend) => (
                   <LegendCard key={legend.id} legend={legend} />
                 ))}

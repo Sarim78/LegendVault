@@ -68,11 +68,10 @@ export default function SubmitPage() {
   )
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="container mx-auto max-w-2xl px-4">
-        {/* Page Header */}
-        <div className="mb-10 text-center">
-          <h1 className="font-serif text-4xl font-bold text-foreground md:text-5xl">
+    <div className="min-h-screen py-8 sm:py-12">
+      <div className="container mx-auto w-full max-w-2xl px-4">
+        <div className="mb-8 text-center sm:mb-10">
+          <h1 className="font-serif text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
             Submit a Legend
           </h1>
           <p className="mt-3 text-muted-foreground">
@@ -80,8 +79,7 @@ export default function SubmitPage() {
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
+        <form onSubmit={handleSubmit} className="glass-card w-full rounded-xl p-4 sm:p-6 md:p-8">
           {/* Title */}
           <div className="mb-6">
             <label
@@ -97,7 +95,7 @@ export default function SubmitPage() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="The Whispering Bridge of Hollow Creek..."
               className={cn(
-                'w-full rounded-lg border bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
+                'min-h-11 w-full rounded-lg border bg-background/50 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
                 errors.title ? 'border-destructive' : 'border-border/60'
               )}
             />
@@ -122,7 +120,7 @@ export default function SubmitPage() {
               value={category}
               onChange={(e) => setCategory(e.target.value as Category)}
               className={cn(
-                'w-full rounded-lg border bg-background/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary',
+                'min-h-11 w-full rounded-lg border bg-background/50 px-4 py-3 text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary',
                 errors.category ? 'border-destructive' : 'border-border/60',
                 !category && 'text-muted-foreground'
               )}
@@ -163,7 +161,7 @@ export default function SubmitPage() {
                 onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 200)}
                 placeholder="Search for a location..."
                 className={cn(
-                  'w-full rounded-lg border bg-background/50 py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
+                  'min-h-11 w-full rounded-lg border bg-background/50 py-3 pl-11 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
                   errors.location ? 'border-destructive' : 'border-border/60'
                 )}
               />
@@ -178,7 +176,7 @@ export default function SubmitPage() {
                       setLocation(suggestion)
                       setShowLocationSuggestions(false)
                     }}
-                    className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-foreground transition-smooth hover:bg-muted"
+                    className="flex min-h-11 w-full items-center gap-2 px-4 py-3 text-left text-base text-foreground transition-smooth hover:bg-muted"
                   >
                     <MapPin className="h-4 w-4 text-destructive" />
                     {suggestion}
@@ -209,7 +207,7 @@ export default function SubmitPage() {
               placeholder="Share the legend... What happened? When? What do locals say about it?"
               rows={8}
               className={cn(
-                'w-full resize-none rounded-lg border bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
+                'min-h-11 w-full resize-none rounded-lg border bg-background/50 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary',
                 errors.story ? 'border-destructive' : 'border-border/60'
               )}
             />
@@ -241,7 +239,7 @@ export default function SubmitPage() {
           <Button
             type="submit"
             size="lg"
-            className="glow-violet w-full bg-primary text-base font-medium transition-smooth hover:bg-primary/90 disabled:opacity-50"
+            className="glow-violet min-h-11 w-full bg-primary text-base font-medium transition-smooth hover:bg-primary/90 disabled:opacity-50"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

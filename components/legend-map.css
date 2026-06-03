@@ -10,6 +10,7 @@
 .legend-marker-icon {
   background: transparent !important;
   border: none !important;
+  pointer-events: auto !important;
 }
 
 .legend-pin {
@@ -19,11 +20,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.legend-pin--touch {
+  width: 44px;
+  height: 44px;
 }
 
 .legend-pin--selected {
   width: 48px;
   height: 48px;
+}
+
+.legend-pin--touch.legend-pin--selected {
+  width: 52px;
+  height: 52px;
 }
 
 .legend-pin__glow {
@@ -101,6 +115,9 @@
   color: #6b7280;
   font-size: 1.25rem;
   padding: 0.5rem 0.75rem 0 0;
+  min-width: 44px;
+  min-height: 44px;
+  line-height: 44px;
 }
 
 .legend-leaflet-popup .leaflet-popup-close-button:hover {
@@ -143,8 +160,11 @@
 }
 
 .legend-popup__link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 1rem;
+  min-height: 44px;
   padding: 0.625rem 1rem;
   background: #7c3aed;
   color: white;
@@ -154,6 +174,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   transition: background 0.2s;
+  touch-action: manipulation;
 }
 
 .legend-popup__link:hover {
@@ -164,6 +185,25 @@
   background: #111111;
   color: #f5f5f5;
   border-color: #1f1f1f;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  font-size: 1.125rem;
+}
+
+@media (max-width: 1023px) {
+  .legend-map-container .leaflet-control-zoom {
+    margin-bottom: 4.5rem !important;
+    margin-right: 0.75rem !important;
+  }
+
+  .legend-map-container .leaflet-control-attribution {
+    font-size: 0.625rem;
+    max-width: calc(100% - 1rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .legend-map-container .leaflet-control-zoom a:hover {
