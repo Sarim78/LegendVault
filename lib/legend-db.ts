@@ -14,10 +14,15 @@ export interface DbLegend {
   title: string
   story: string
   authorId: string
+  authorName?: string
   location: { name: string; lat: number; lng: number }
-  category: Category
+  category: Category | string
   upvotes: number
   commentCount: number
+}
+
+function normalizeCategory(category: string): Category {
+  return category.toLowerCase() as Category
 }
 
 export interface DbUser {
@@ -86,16 +91,25 @@ export async function getUsersByIds(userIds: string[]): Promise<Map<string, DbUs
 }
 
 export function mapDbLegendToLegend(item: DbLegend, author: DbUser): Legend {
+  const baseAuthor = mapUserToAuthor(author)
+  const authorData = item.authorName
+    ? {
+        ...baseAuthor,
+        username: item.authorName,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.authorName}`,
+      }
+    : baseAuthor
+
   return {
     id: item.legendId,
     title: item.title,
     excerpt: excerptFromStory(item.story),
     content: item.story,
-    category: item.category,
+    category: normalizeCategory(String(item.category)),
     location: item.location,
     upvotes: item.upvotes ?? 0,
     commentCount: item.commentCount ?? 0,
-    author: mapUserToAuthor(author),
+    author: authorData,
     createdAt: item.createdAt,
   }
 }
