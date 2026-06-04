@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { mockLegends } from '@/lib/mock-data'
+import type { Legend } from '@/lib/types'
 import { List } from 'lucide-react'
 import { MapLegendsList } from '@/components/map-legends-list'
 import {
@@ -23,8 +23,27 @@ const LegendMap = dynamic(() => import('@/components/legend-map'), {
 })
 
 export default function MapPage() {
+  const [legends, setLegends] = useState<Legend[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  useEffect(() => {
+    async function fetchLegends() {
+      try {
+        const res = await fetch('/api/legends')
+        if (res.ok) {
+          const data = await res.json()
+          setLegends(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch legends:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLegends()
+  }, [])
 
   const handleSelectLegend = useCallback((id: string | null) => {
     setSelectedLegend((current) => (current === id && id !== null ? null : id))
@@ -38,17 +57,24 @@ export default function MapPage() {
     [handleSelectLegend]
   )
 
+  if (loading) {
+    return (
+      <div className="flex h-[calc(100dvh-4rem)] w-full items-center justify-center bg-[#0a0a0a]">
+        <div className="text-sm text-muted-foreground">Loading legends...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative h-[calc(100dvh-4rem)] w-full overflow-hidden bg-[#0a0a0a]">
       <div className="absolute inset-0">
         <LegendMap
-          legends={mockLegends}
+          legends={legends}
           selectedLegendId={selectedLegend}
           onSelectLegend={handleSelectLegend}
         />
       </div>
 
-      {/* Desktop sidebar */}
       <div className="absolute left-4 top-4 z-[1000] hidden h-[calc(100%-2rem)] w-96 lg:block">
         <div className="glass-card flex h-full flex-col rounded-xl">
           <div className="border-b border-border/40 p-4">
@@ -56,12 +82,12 @@ export default function MapPage() {
               Nearby Legends
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {mockLegends.length} legends discovered
+              {legends.length} legends discovered
             </p>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             <MapLegendsList
-              legends={mockLegends}
+              legends={legends}
               selectedLegendId={selectedLegend}
               onSelectLegend={handleListSelect}
             />
@@ -69,7 +95,6 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* Mobile bottom drawer trigger */}
       <button
         type="button"
         onClick={() => setDrawerOpen(true)}
@@ -77,10 +102,9 @@ export default function MapPage() {
         aria-label="Open nearby legends list"
       >
         <List className="h-5 w-5" />
-        Nearby Legends ({mockLegends.length})
+        Nearby Legends ({legends.length})
       </button>
 
-      {/* Mobile bottom drawer */}
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="bottom">
         <DrawerContent className="glass-card z-[1001] max-h-[85dvh] border-border/40 bg-card/95">
           <DrawerHeader className="border-b border-border/40 pb-4 text-left">
@@ -88,12 +112,12 @@ export default function MapPage() {
               Nearby Legends
             </DrawerTitle>
             <DrawerDescription>
-              {mockLegends.length} legends discovered
+              {legends.length} legends discovered
             </DrawerDescription>
           </DrawerHeader>
           <div className="overflow-y-auto px-4 pb-6 pt-2">
             <MapLegendsList
-              legends={mockLegends}
+              legends={legends}
               selectedLegendId={selectedLegend}
               onSelectLegend={handleListSelect}
             />

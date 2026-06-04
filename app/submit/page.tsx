@@ -56,11 +56,30 @@ export default function SubmitPage() {
 
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const res = await fetch('/api/legends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          story,
+          category,
+          location,
+        }),
+      })
 
-    // Redirect to feed after submission
-    router.push('/feed')
+      if (!res.ok) {
+        const data = await res.json()
+        setErrors({ submit: data.error ?? 'Failed to submit legend' })
+        return
+      }
+
+      router.push('/feed')
+    } catch {
+      setErrors({ submit: 'Failed to submit legend. Please try again.' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const filteredSuggestions = LOCATION_SUGGESTIONS.filter((loc) =>
@@ -80,7 +99,13 @@ export default function SubmitPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card w-full rounded-xl p-4 sm:p-6 md:p-8">
-          {/* Title */}
+          {errors.submit && (
+            <p className="mb-4 flex items-center gap-1 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              {errors.submit}
+            </p>
+          )}
+
           <div className="mb-6">
             <label
               htmlFor="title"
@@ -107,7 +132,6 @@ export default function SubmitPage() {
             )}
           </div>
 
-          {/* Category */}
           <div className="mb-6">
             <label
               htmlFor="category"
@@ -142,7 +166,6 @@ export default function SubmitPage() {
             )}
           </div>
 
-          {/* Location */}
           <div className="relative mb-6">
             <label
               htmlFor="location"
@@ -192,7 +215,6 @@ export default function SubmitPage() {
             )}
           </div>
 
-          {/* Story */}
           <div className="mb-6">
             <label
               htmlFor="story"
@@ -235,7 +257,6 @@ export default function SubmitPage() {
             </div>
           </div>
 
-          {/* Submit Button */}
           <Button
             type="submit"
             size="lg"

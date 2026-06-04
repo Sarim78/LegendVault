@@ -1,10 +1,10 @@
 'use client'
 
-import { use, useState } from 'react'
+import { use, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { formatDistanceToNow, format } from 'date-fns'
-import { mockLegends, mockComments } from '@/lib/mock-data'
+import type { Legend, Comment } from '@/lib/types'
 import { getCategoryColor } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { MapPin, ChevronUp, Calendar, MessageCircle, Send, ArrowLeft } from 'lucide-react'
@@ -12,59 +12,119 @@ import { Button } from '@/components/ui/button'
 
 export default function LegendPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
+  const [legend, setLegend] = useState<Legend | null>(null)
+  const [loading, setLoading] = useState(true)
   const [upvoted, setUpvoted] = useState(false)
   const [upvoteCount, setUpvoteCount] = useState(0)
   const [newComment, setNewComment] = useState('')
-  const [comments, setComments] = useState(mockComments)
+  const [comments, setComments] = useState<Comment[]>([])
+  const [submittingComment, setSubmittingComment] = useState(false)
 
-  const legend = mockLegends.find((l) => l.id === id)
+  useEffect(() => {
+    async function fetchLegend() {
+      try {
+        const res = await fetch(`/api/legends/${id}`)
+        if (res.status === 404) {
+          setLegend(null)
+          return
+        }
+        if (res.ok) {
+          const data = await res.json()
+          setLegend(data)
+          setUpvoteCount(data.upvotes)
+        }
+      } catch (error) {
+        console.error('Failed to fetch legend:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLegend()
+  }, [id])
+
+  useEffect(() => {
+    async function fetchComments() {
+      try {
+        const res = await fetch(`/api/comments/${id}`)
+        if (res.ok) {
+          const data = await res.json()
+          setComments(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch comments:', error)
+      }
+    }
+    fetchComments()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-muted-foreground">Loading legend...</div>
+      </div>
+    )
+  }
 
   if (!legend) {
     notFound()
   }
 
-  // Initialize upvote count
-  if (upvoteCount === 0 && legend) {
-    setUpvoteCount(legend.upvotes)
-  }
-
-  const handleUpvote = () => {
+  const handleUpvote = async () => {
     if (upvoted) {
       setUpvoteCount((prev) => prev - 1)
-    } else {
-      setUpvoteCount((prev) => prev + 1)
+      setUpvoted(false)
+      return
     }
-    setUpvoted(!upvoted)
+
+    try {
+      const res = await fetch(`/api/legends/${id}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'guest' }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setUpvoteCount(data.upvotes)
+        setUpvoted(true)
+      }
+    } catch (error) {
+      console.error('Failed to upvote:', error)
+    }
   }
 
-  const handleSubmitComment = (e: React.FormEvent) => {
+  const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newComment.trim()) return
+    if (!newComment.trim() || submittingComment) return
 
-    const comment = {
-      id: `c${Date.now()}`,
-      content: newComment,
-      author: {
-        id: 'current-user',
-        username: 'You',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=CurrentUser',
-      },
-      createdAt: new Date().toISOString(),
+    setSubmittingComment(true)
+    try {
+      const res = await fetch(`/api/comments/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: newComment,
+          authorName: 'You',
+        }),
+      })
+      if (res.ok) {
+        const comment = await res.json()
+        setComments([comment, ...comments])
+        setNewComment('')
+      }
+    } catch (error) {
+      console.error('Failed to post comment:', error)
+    } finally {
+      setSubmittingComment(false)
     }
-
-    setComments([comment, ...comments])
-    setNewComment('')
   }
 
   const categoryColor = getCategoryColor(legend.category)
 
   return (
     <div className="min-h-screen pb-20">
-      {/* Hero Header */}
       <header className="noise-overlay relative overflow-hidden border-b border-border/40 bg-card/30 py-16">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
         <div className="container relative z-10 mx-auto px-4">
-          {/* Back Button */}
           <Link
             href="/feed"
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-smooth hover:text-foreground"
@@ -73,7 +133,6 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
             Back to Explore
           </Link>
 
-          {/* Category Badge */}
           <span
             className={cn(
               'inline-flex items-center rounded-full px-3 py-1 text-sm font-medium capitalize text-white',
@@ -83,12 +142,10 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
             {legend.category}
           </span>
 
-          {/* Title */}
           <h1 className="mt-4 max-w-3xl font-serif text-2xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
             {legend.title}
           </h1>
 
-          {/* Meta */}
           <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <MapPin className="h-4 w-4 text-destructive" />
@@ -104,9 +161,7 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
 
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col gap-12 lg:flex-row">
-          {/* Main Content */}
           <article className="flex-1">
-            {/* Story Content */}
             <div className="prose prose-invert max-w-none">
               {legend.content.split('\n\n').map((paragraph, index) => (
                 <p
@@ -118,7 +173,6 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
               ))}
             </div>
 
-            {/* Upvote Button */}
             <div className="mt-12 flex items-center gap-4 border-t border-border/40 pt-8">
               <Button
                 size="lg"
@@ -140,7 +194,6 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
               </span>
             </div>
 
-            {/* Comments Section */}
             <section className="mt-12 border-t border-border/40 pt-8">
               <h2 className="flex items-center gap-2 font-serif text-2xl font-bold text-foreground">
                 <MessageCircle className="h-6 w-6" />
@@ -148,7 +201,6 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
                 <span className="text-lg text-muted-foreground">({comments.length})</span>
               </h2>
 
-              {/* Comment Form */}
               <form onSubmit={handleSubmitComment} className="mt-6">
                 <div className="glass-card overflow-hidden rounded-xl">
                   <textarea
@@ -162,7 +214,7 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
                     <Button
                       type="submit"
                       className="min-h-11 bg-primary hover:bg-primary/90"
-                      disabled={!newComment.trim()}
+                      disabled={!newComment.trim() || submittingComment}
                     >
                       <Send className="mr-2 h-4 w-4" />
                       Post Comment
@@ -171,7 +223,6 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
                 </div>
               </form>
 
-              {/* Comments List */}
               <div className="mt-8 flex flex-col gap-4">
                 {comments.map((comment) => (
                   <div
@@ -202,9 +253,7 @@ export default function LegendPage({ params }: { params: Promise<{ id: string }>
             </section>
           </article>
 
-          {/* Sidebar */}
           <aside className="w-full shrink-0 lg:w-80">
-            {/* Author Card */}
             <div className="glass-card sticky top-24 rounded-xl p-6">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Submitted By

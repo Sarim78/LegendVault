@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { LegendCard } from '@/components/legend-card'
 import { LegendCardSkeleton } from '@/components/legend-card-skeleton'
-import { mockLegends } from '@/lib/mock-data'
-import { Category, CATEGORIES } from '@/lib/types'
+import { Legend, Category, CATEGORIES } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { SlidersHorizontal, Ghost } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,32 +11,48 @@ import { Button } from '@/components/ui/button'
 type SortOption = 'newest' | 'upvoted'
 
 export default function FeedPage() {
+  const [legends, setLegends] = useState<Legend[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all')
   const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [showFilters, setShowFilters] = useState(false)
 
+  useEffect(() => {
+    async function fetchLegends() {
+      try {
+        const res = await fetch('/api/legends')
+        if (res.ok) {
+          const data = await res.json()
+          setLegends(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch legends:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLegends()
+  }, [])
+
   const filteredAndSortedLegends = useMemo(() => {
-    let legends = [...mockLegends]
+    let result = [...legends]
 
-    // Filter by category
     if (selectedCategory !== 'all') {
-      legends = legends.filter((legend) => legend.category === selectedCategory)
+      result = result.filter((legend) => legend.category === selectedCategory)
     }
 
-    // Sort
     if (sortBy === 'newest') {
-      legends.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     } else {
-      legends.sort((a, b) => b.upvotes - a.upvotes)
+      result.sort((a, b) => b.upvotes - a.upvotes)
     }
 
-    return legends
-  }, [selectedCategory, sortBy])
+    return result
+  }, [legends, selectedCategory, sortBy])
 
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
-        {/* Page Header */}
         <div className="mb-8">
           <h1 className="font-serif text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
             Explore Legends
@@ -48,7 +63,6 @@ export default function FeedPage() {
         </div>
 
         <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Mobile Filter Toggle */}
           <div className="flex items-center justify-between lg:hidden">
             <Button
               variant="outline"
@@ -86,7 +100,6 @@ export default function FeedPage() {
             </div>
           </div>
 
-          {/* Sidebar */}
           <aside
             className={cn(
               'w-full shrink-0 lg:block lg:w-64',
@@ -94,7 +107,6 @@ export default function FeedPage() {
             )}
           >
             <div className="glass-card sticky top-24 rounded-xl p-6">
-              {/* Categories */}
               <div className="mb-6">
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Categories
@@ -111,10 +123,10 @@ export default function FeedPage() {
                     )}
                   >
                     <span>All Legends</span>
-                    <span className="text-xs">{mockLegends.length}</span>
+                    <span className="text-xs">{legends.length}</span>
                   </button>
                   {CATEGORIES.map((category) => {
-                    const count = mockLegends.filter(
+                    const count = legends.filter(
                       (l) => l.category === category.value
                     ).length
                     return (
@@ -142,7 +154,6 @@ export default function FeedPage() {
                 </div>
               </div>
 
-              {/* Sort - Desktop Only */}
               <div className="hidden lg:block">
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Sort By
@@ -177,16 +188,20 @@ export default function FeedPage() {
             </div>
           </aside>
 
-          {/* Main Content */}
           <main className="flex-1">
-            {filteredAndSortedLegends.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <LegendCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredAndSortedLegends.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filteredAndSortedLegends.map((legend) => (
                   <LegendCard key={legend.id} legend={legend} />
                 ))}
               </div>
             ) : (
-              /* Empty State */
               <div className="glass-card flex flex-col items-center justify-center rounded-xl py-20 text-center">
                 <Ghost className="h-16 w-16 text-muted-foreground/50" />
                 <h3 className="mt-6 font-serif text-xl font-bold text-foreground">
